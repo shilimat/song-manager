@@ -14,7 +14,9 @@ return [
      * Secret Key: Your Chapa secretKey. Sign up on https://dashboard.chapa.co/ to get one from your settings page
      *
      */
-    'secretKey' => env('CHAPA_SECRET_KEY'),
+
+    'base_uri'=>env('CHAPA_BASE_URI'),
+    'secret_key'=>env('CHAPA_SECRET_KEY')
 
 
 ];

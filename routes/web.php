@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/payment', [ChapaController::class, 'showPaymentForm'])->name('payment');
-    Route::post('pay', 'App\Http\Controllers\ChapaController@initialize')->name('pay');
+    Route::post('pay', 'App\Http\Controllers\ChapaController@initializePayment')->name('pay');
     Route::get('callback/{reference}', 'App\Http\Controllers\ChapaController@callback')->name('callback');
 });
 

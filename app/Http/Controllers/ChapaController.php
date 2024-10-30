@@ -1,93 +1,52 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Services\ChapaService;
 use Illuminate\Http\Request;
-
-
-use Chapa\Chapa\Facades\Chapa as Chapa;
 
 class ChapaController extends Controller
 {
-    /**
-     * Initialize Rave payment process
-     * @return void
-     */
-    protected $reference;
-    private $songId;
+  
+//php artisan make:controller ChapaController
 
-    public function __construct(){
-        $this->reference = Chapa::generateReference();
-
-    }
-    public function initialize(Request $request)
+    protected  $chapaService;
+    
+    public function __construct(ChapaService $chapaService)
     {
-        //This generates a payment reference
-        $reference = $this->reference;
-
-        $user = auth()->user();
-        $user->is_subscribed = false; // Assuming you're setting it to false when starting a new payment
-        $user->subscription_expires_at = null; // Reset the expiry date
-        // $this->songId = $request->song_id;
-        // $user->save(); 
-        
-
-        // Enter the details of the payment
-        $data = [
-            
-            'amount' => $request->amount,
-            'email' => $request->email,
-            'tx_ref' => $reference,
-            'currency' => "ETB",
-            'callback_url' => route('callback',[$reference]),
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            "customization" => [
-                "title" => 'Dummy Laravel',
-                "description" => "I amma test this"
-            ]
-        ];
-        
-
-        $payment = Chapa::initializePayment($data);
-
-
-        if ($payment['status'] !== 'success') {
-            // notify something went wrong
-            return;
-        }
-
-        dd($data);
-
-
-        return redirect($payment['data']['checkout_url']);
+    $this->chapaService = $chapaService;
     }
 
-    /**
-     * Obtain Rave callback information
-     * @return void
-     */
-    public function callback($reference)
+    public function initializePayment(Request $request)
     {
-        
-        $data = Chapa::verifyTransaction($reference);
+    
+ 
 
-        //if payment is successful
-        if ($data['status'] ==  'success') {
-        
+    $data = [
+        'amount' => $request->input('amount'),
+        'currency' => 'ETB',
+        'email' => $request->input('email'),
+        'first_name' => $request->input('first_name'),
+        'last_name' => $request->input('last_name'),
+        'tx_ref' => uniqid('tx_', true),
+        'callback_url' => url('/payment/callback'),
+    ];
 
-        redirect()->route('song.show')->with('success', 'Payment successful');
-        }
-
-        else{
-            //oopsie something ain't right.
-        }
-
-
-    }
-
-    public function showPaymentForm()
-    {
-        return view('payment');
-    }
+    $response = $this->chapaService->initializePayment($data);
+    return response()->json($response);
+    
 }
 
+
+public function verifyPayment($transactionId){
+
+    $response = $this->chapaService->verifyPayment($transactionId);
+    return response()->json($response);
+
+}
+
+public function showPaymentForm()
+{
+    return view('payment'); // Replace 'payment.form' with the actual view name
+}
+}
