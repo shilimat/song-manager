@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Artist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\MostPlayed;
 
 class ArtistController extends Controller
 {
@@ -63,7 +64,8 @@ class ArtistController extends Controller
      */
     public function show(Artist $artist)
     {
-        return view('artists.show', compact('artist'));
+        $topSongs = MostPlayed::getTopSongsByTotalPlayCount($artist->id);
+        return view('artists.show', compact('artist', 'topSongs'));
     }
 
     /**

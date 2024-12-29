@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class MostPlayed extends Model
 {
@@ -14,7 +15,7 @@ class MostPlayed extends Model
      *
      * @var string
      */
-    protected $table = 'most_played';
+    
 
     /**
      * The attributes that are mass assignable.
@@ -60,5 +61,29 @@ class MostPlayed extends Model
     public function album()
     {
         return $this->belongsTo(Album::class);
+    }
+
+    public static function getTopSongsByTotalPlayCount($artistId)
+    {
+        // Fetch songs, group by song_id, sum the play_count, join with songs table
+        $topSongs = DB::table('most_playeds')
+            ->select('song_id', DB::raw('SUM(play_count) as total_play_count'))
+            ->where('artist_id', $artistId)
+            ->groupBy('song_id')  // Group by song_id to sum play counts
+            ->orderByDesc('song_id')  // Sort by song_id in descending order
+            ->get();
+
+        // Now join with Song table to get the details for each song
+        $topSongsWithDetails = $topSongs->map(function ($mostPlayed) {
+            // Fetch the song details using the song_id
+            $song = Song::with(['artist', 'album', 'genre'])->find($mostPlayed->song_id);
+
+            // Attach total play count to the song details
+            $song->total_play_count = $mostPlayed->total_play_count;
+
+            return $song;
+        });
+
+        return $topSongsWithDetails;
     }
 }

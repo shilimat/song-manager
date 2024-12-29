@@ -6,6 +6,7 @@ use App\Models\Song;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Genre;
+use App\Models\MostPlayed;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
@@ -77,6 +78,18 @@ class SongController extends Controller
      */
     public function show(Song $song)
     {
+        $userId = auth()->id(); // Get the logged-in user's ID
+        
+        // If no record exists, create a new record with play_count as 1
+        MostPlayed::create([
+            'song_id' => $song->id,
+            'user_id' => $userId,
+            'artist_id' => $song->artist_id,
+            'album_id' => $song->album_id,
+            'play_count' => 1, // Default play count is 1
+            'last_played_at' => now(),
+        ]);    
+
         return view('songs.show', compact('song'));
     }
 
@@ -156,5 +169,15 @@ class SongController extends Controller
         $song->delete();
 
         return redirect()->route('songs.index')->with('success', 'Song deleted successfully.');
+    }
+
+    public function incrementPlayCount($songId)
+    {
+         // Find the song by ID
+
+        // Check if a record exists for this song and user
+        
+
+        return response()->json(['message' => 'Play count updated']);
     }
 }
