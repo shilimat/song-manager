@@ -11,7 +11,12 @@
                 style="width: 300px; height: 300px; object-fit: cover;"
             >
             <h3 class="text-dark fw-bold mt-3">{{ $song->title }}</h3>
-            <p class="text-muted mb-1"><strong>Artist:</strong> {{ $song->artist->name }}</p>
+            <p class="text-muted mb-1">
+                <strong>Artist:</strong> 
+                <a href="{{ route('artists.show', ['artist' => $song->artist->id]) }}" class="text-decoration-none text-primary">
+                    {{ $song->artist->name }}
+                </a>
+            </p>
             <p class="text-muted"><strong>Genre:</strong> {{ $song->genre->name }}</p>
         </div>
 
@@ -35,7 +40,11 @@
             >
             <div>
                 <h6 class="mb-0 fw-bold">{{ $song->title }}</h6>
-                <small class="text-muted">{{ $song->artist->name }}</small>
+                <small class="text-muted">
+                    <a href="{{ route('artists.show', ['artist' => $song->artist->id]) }}" class="text-decoration-none text-light">
+                        {{ $song->artist->name }}
+                    </a>
+                </small>
             </div>
         </div>
 
@@ -129,6 +138,15 @@
         const songId = "{{ $song->id }}";
         const shareLink = `${window.location.origin}/songs/${songId}`;
 
+        audioPlayer.play();
+        if (audioPlayer.played) {
+            const playIcon = playPauseBtn.querySelector('i');
+        playIcon.className = 'fa fa-pause';
+        }
+        
+
+
+
         function togglePlayPause() {
             const playIcon = playPauseBtn.querySelector('i');
             if (audioPlayer.paused || audioPlayer.ended) {
@@ -183,6 +201,7 @@
             }, 3000);
         }
 
+        
         shareButton.addEventListener('click', () => {
             navigator.clipboard.writeText(shareLink)
                 .then(() => showToast('Link copied to clipboard!'))

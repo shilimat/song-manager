@@ -26,10 +26,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/songs/{song}/edit', [SongController::class, 'edit'])->name('songs.edit');
         Route::put('/songs/{song}', [SongController::class, 'update'])->name('songs.update');
         Route::delete('/songs/{song}', [SongController::class, 'destroy'])->name('songs.destroy');
+        
     });
 
     Route::get('/songs', [SongController::class, 'index'])->name('songs.index');
     Route::get('/songs/{song}', [SongController::class, 'show'])->name('songs.show');
+    Route::post('/songs/{song}/increment-play', [SongController::class, 'incrementPlayCount'])->name('songs.incrementPlay');
 });
 
 // Artist Routes (Admin: CRUD; User: View)
