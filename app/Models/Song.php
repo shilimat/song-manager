@@ -17,7 +17,8 @@ class Song extends Model
         'genre_id',
         'artist_id',
         'lyrics',
-        'cover_image'
+        'cover_image',
+        'audio_file'
     ];
 
     // Relationships
