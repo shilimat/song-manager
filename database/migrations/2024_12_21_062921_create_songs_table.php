@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('artist_id')->constrained()->onDelete('cascade');
             $table->text('lyrics')->nullable();
             $table->string('cover_image')->nullable();
+            $table->string('audio_file')->nullable();
             $table->timestamps();
         });
     }
