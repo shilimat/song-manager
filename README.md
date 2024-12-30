@@ -1,5 +1,5 @@
 # SongPlayer 🎵  
-**SongPlayer** is a powerful song management and playback application that allows users to explore songs, albums, genres, and artists. Admins can perform full CRUD operations to manage song-related data. The latest version introduces exciting sharing capabilities and enhanced navigation features.
+**SongPlayer** is a song management and playback application that allows users to explore songs, albums, genres, and artists. Admins can perform full CRUD operations to manage song-related data. The latest version introduces exciting sharing capabilities and enhanced navigation features.
 
 ---
 
